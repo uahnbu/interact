@@ -1,7 +1,8 @@
 function Interact(selector, minSize = 64, snapRange = 32) {
   
   const body = document.body;
-  const classes = ['drag', 'resizeHorizontal', 'resizeDiagonal2', 'resizeVertical', 'resizeDiagonal1'];
+  const classes = ['drag', 'resizeHorizontal', 'resizeDiagonal2', 'resizeVertical', 'resizeDiagonal1'].map(c => 'interact-' + c);
+  const cursors = ['move', 'w-resize', 'nesw-resize', 's-resize', 'nwse-resize'];
   const boxes = [...document.querySelectorAll(selector)];
 
   let interact = null;
@@ -12,6 +13,10 @@ function Interact(selector, minSize = 64, snapRange = 32) {
    *  1      -1 * = 3 * vertical *
    * -2  -3  -4 *   + horizontal */
   const mouseIsEdging = (a => (mx, my, x, y, w, h, r) => mouseIsInside(mx, my, x - r, y - r, w + 2 * r, h + 2 * r) * (3 * (a(y - my) < r) - 3 * (a(y + h - my) < r) + (a(x - mx) < r) - (a(x + w - mx) < r)))(Math.abs);
+  
+  const style = document.createElement('style');
+  style.innerHTML = classes.map((c, i) => `body.${c} {cursor:${cursors[i]}}`).join('');
+  document.head.appendChild(style);
 
   this.mouseMove = function ({ clientX: mx, clientY: my }) {
     if (interact) {
