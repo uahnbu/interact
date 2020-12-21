@@ -36,7 +36,7 @@ function Interact(selector, minSize = 64, snapRange = 32) {
           snapEdge = snapEdges[f](edge => a(mt - t + d - edge) < snapRange)[0];
           if (n(snapEdge)) { s[st] = snapEdge - d + p; return }
           s[st] = mt - t + p;
-          return;
+          return { [st]: mt - t };
         }
         // Resizing
         if (t) {
@@ -60,7 +60,7 @@ function Interact(selector, minSize = 64, snapRange = 32) {
       })(n => !isNaN(n), Math.abs, 'filter', 'offset', 'inner', 'px');
       resizeAxe(mx, x, w, 'left', 'width');
       resizeAxe(my, y, h, 'top', 'height');
-      return interact;
+      return (6 * y - 3 * h + 2 * x - w) % 8;
     }
     body.classList.remove(...classes);
     for (const box of boxes) {
@@ -91,15 +91,15 @@ function Interact(selector, minSize = 64, snapRange = 32) {
         interact = {box};
         /* x: 4  1 -2           *
          * y: 4  3  2           *
-         * w: 4  1 -2 (2 -1 -4) *
-         * h: 4  3  2 (2 -3 -4) */
+         * w: 4  1 -2 ( 2 -1 -4) *
+         * h: 4  3  2 (-2 -3 -4) */
         (state - 1) % 3 === 0 && (interact.x = mx - x, interact.w = mx + w);
         (state + 1) % 3 === 0 && (interact.w = mx - w);
         state >  1 && (interact.y = my - y, interact.h = my + h);
         state < -1 && (interact.h = my - h);
-        return interact;
+        break;
       }
-      if (innerState) return interact = { box, x: mx - x, y: my - y };
+      if (innerState) { interact = { box, x: mx - x, y: my - y }; break }
     }
   }
 
