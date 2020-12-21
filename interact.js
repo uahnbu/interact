@@ -15,7 +15,8 @@ function Interact(selector, minSize = 64, snapRange = 32) {
   const mouseIsEdging = (a => (mx, my, x, y, w, h, r) => mouseIsInside(mx, my, x - r, y - r, w + 2 * r, h + 2 * r) * (3 * (a(y - my) < r) - 3 * (a(y + h - my) < r) + (a(x - mx) < r) - (a(x + w - mx) < r)))(Math.abs);
   
   const style = document.createElement('style');
-  style.innerHTML = classes.map((c, i) => `body.${c} {cursor:${cursors[i]}}`).join('');
+  style.innerHTML = classes.map((c, i) => `body.${c}{cursor:${cursors[i]}}`).join('');
+  style.classList.add('interact-cursors');
   document.head.appendChild(style);
 
   this.mouseMove = function ({ clientX: mx, clientY: my }) {
@@ -70,7 +71,7 @@ function Interact(selector, minSize = 64, snapRange = 32) {
         break;
       }
       if (mouseIsInside(mx, my, x, y, w, h)) {
-        body.classList.add('drag');
+        body.classList.add(classes[0]);
         break;
       }
     }
