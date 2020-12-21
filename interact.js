@@ -21,7 +21,7 @@ function Interact(selector, minSize = 64, snapRange = 32) {
 
   this.mouseMove = function ({ clientX: mx, clientY: my }) {
     if (interact) {
-      const {box: b, x, y, w, h} = interact;
+      const { box: b, x, y, w, h } = interact;
       const s = b.style;
       const resizeAxe = ((n, a, f, o, i, p) => (mt, t, d, st, sd) => {
         const ot = o + st[0].toUpperCase() + st.slice(1);
@@ -60,7 +60,7 @@ function Interact(selector, minSize = 64, snapRange = 32) {
       })(n => !isNaN(n), Math.abs, 'filter', 'offset', 'inner', 'px');
       resizeAxe(mx, x, w, 'left', 'width');
       resizeAxe(my, y, h, 'top', 'height');
-      return { box, state: (6 * !!y - 3 * !!h + 2 * !!x - !!w) % 8 };
+      return { box: b, state: (6 * !!y - 3 * !!h + 2 * !!x - !!w) % 8 };
     }
     body.classList.remove(...classes);
     for (const box of boxes) {
