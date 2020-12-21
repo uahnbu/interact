@@ -81,11 +81,11 @@ function Interact(selector, minSize = 64, snapRange = 32) {
     for (const box of boxes) {
       const { offsetLeft: x, offsetTop: y, offsetWidth: w, offsetHeight: h } = box;
       const innerState = mouseIsInside(mx, my, x, y, w, h);
-      if (innerState) {
-        box.style.zIndex = topBox.style.zIndex + 1;
-        topBox = box;
-        boxes.sort((b1, b2) => b2.style.zIndex - b1.style.zIndex);
-      }
+      innerState && topBox !== box && (
+        box.style.zIndex = topBox.style.zIndex + 1,
+        topBox = box,
+        boxes.sort((b1, b2) => b2.style.zIndex - b1.style.zIndex)
+      );
       const state = mouseIsEdging(mx, my, x, y, w, h, 16);
       if (state) {
         interact = {box};
