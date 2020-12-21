@@ -60,7 +60,7 @@ function Interact(selector, minSize = 64, snapRange = 32) {
       })(n => !isNaN(n), Math.abs, 'filter', 'offset', 'inner', 'px');
       resizeAxe(mx, x, w, 'left', 'width');
       resizeAxe(my, y, h, 'top', 'height');
-      return;
+      return interact;
     }
     body.classList.remove(...classes);
     for (const box of boxes) {
@@ -97,9 +97,9 @@ function Interact(selector, minSize = 64, snapRange = 32) {
         (state + 1) % 3 === 0 && (interact.w = mx - w);
         state >  1 && (interact.y = my - y, interact.h = my + h);
         state < -1 && (interact.h = my - h);
-        break;
+        return interact;
       }
-      if (innerState) { interact = { box, x: mx - x, y: my - y }; break }
+      if (innerState) return interact = { box, x: mx - x, y: my - y };
     }
   }
 
