@@ -60,7 +60,7 @@ function Interact(selector, minSize = 64, snapRange = 32) {
       })(n => !isNaN(n), Math.abs, 'filter', 'offset', 'inner', 'px');
       resizeAxe(mx, x, w, 'left', 'width');
       resizeAxe(my, y, h, 'top', 'height');
-      return (6 * y - 3 * h + 2 * x - w) % 8;
+      return { box, state: (6 * !!y - 3 * !!h + 2 * !!x - !!w) % 8 };
     }
     body.classList.remove(...classes);
     for (const box of boxes) {
