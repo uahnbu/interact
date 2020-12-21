@@ -1,8 +1,8 @@
-function Interact(elements, minSize = 64, snapRange = 32) {
+function Interact(selector, minSize = 64, snapRange = 32) {
   
   const body = document.body;
   const classes = ['drag', 'resizeHorizontal', 'resizeDiagonal2', 'resizeVertical', 'resizeDiagonal1'];
-  const boxes = [...elements];
+  const boxes = [...document.querySelectorAll(selector)];
 
   let interact = null;
   let topBox = boxes.reverse()[0];
@@ -99,4 +99,4 @@ function Interact(elements, minSize = 64, snapRange = 32) {
 
   this.mouseUp = function () { interact = null }
 
-})(boxes, minSize, snapRange);
+}
