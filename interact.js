@@ -13,6 +13,14 @@ function Interact(selector, minSize = 64, snapRange = 32) {
    *  1      -1 * = 3 * vertical *
    * -2  -3  -4 *   + horizontal */
   const mouseIsEdging = (a => (mx, my, x, y, w, h, r) => mouseIsInside(mx, my, x - r, y - r, w + 2 * r, h + 2 * r) * (3 * (a(y - my) < r) - 3 * (a(y + h - my) < r) + (a(x - mx) < r) - (a(x + w - mx) < r)))(Math.abs);
+  const mouseNotGrasping = (mx, my, box) => {
+    const children = [...box.querySelectorAll('*')].reverse();
+    for (const child of children) {
+      const { x, y, width: w, height:h } = child.getBoundingClientRect();
+      if (!mouseIsInside(mx, my, x, y, w, h)) continue;
+      return !child.classList.contains('graspable');
+    }
+  }
   
   const style = document.createElement('style');
   style.innerHTML = classes.map((c, i) => `body.${c}{cursor:${cursors[i]}}`).join('');
@@ -71,6 +79,7 @@ function Interact(selector, minSize = 64, snapRange = 32) {
         break;
       }
       if (mouseIsInside(mx, my, x, y, w, h)) {
+        if (mouseNotGrasping(mx, my, box)) break;
         body.classList.add(classes[0]);
         break;
       }
@@ -78,14 +87,9 @@ function Interact(selector, minSize = 64, snapRange = 32) {
   }
 
   this.mouseDown = function ({ clientX: mx, clientY: my }) {
+    console.log(mx, my);
     for (const box of boxes) {
-      const { offsetLeft: x, offsetTop: y, offsetWidth: w, offsetHeight: h } = box;
-      const innerState = mouseIsInside(mx, my, x, y, w, h);
-      innerState && topBox !== box && (
-        box.style.zIndex = topBox.style.zIndex + 1,
-        topBox = box,
-        boxes.sort((b1, b2) => b2.style.zIndex - b1.style.zIndex)
-      );
+      const { children, offsetLeft: x, offsetTop: y, offsetWidth: w, offsetHeight: h } = box;
       const state = mouseIsEdging(mx, my, x, y, w, h, 16);
       if (state) {
         interact = {box};
@@ -99,7 +103,17 @@ function Interact(selector, minSize = 64, snapRange = 32) {
         state < -1 && (interact.h = my - h);
         break;
       }
-      if (innerState) { interact = { box, x: mx - x, y: my - y }; break }
+      if (mouseNotGrasping(mx, my, box)) break;
+      const innerState = mouseIsInside(mx, my, x, y, w, h);
+      if (innerState) {
+        topBox !== box && (
+          box.style.zIndex = topBox.style.zIndex + 1,
+          topBox = box,
+          boxes.sort((b1, b2) => b2.style.zIndex - b1.style.zIndex)
+        );
+        interact = { box, x: mx - x, y: my - y };
+        break
+      }
     }
   }
 
