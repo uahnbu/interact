@@ -112,7 +112,7 @@ function Interact(selector, minSize = 64, snapRange = 32) {
           boxes.sort((b1, b2) => b2.style.zIndex - b1.style.zIndex)
         );
         interact = { box, x: mx - x, y: my - y };
-        break
+        break;
       }
     }
   }
